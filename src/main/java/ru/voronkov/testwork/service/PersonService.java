@@ -1,8 +1,8 @@
 package ru.voronkov.testwork.service;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.stereotype.Service;
-import ru.voronkov.testwork.dto.PersonWithCar;
 import ru.voronkov.testwork.model.Person;
 import ru.voronkov.testwork.repository.PersonRepository;
 
@@ -11,11 +11,11 @@ import java.time.Period;
 import java.util.Optional;
 
 @Service
+@Data
 @AllArgsConstructor
 public class PersonService {
 
     private PersonRepository personRepository;
-    private CarService carService;
 
     public Person findPersonById(Long id){
         Optional<Person> person = personRepository.findById(id);
@@ -39,21 +39,12 @@ public class PersonService {
         return getAgePerson(person)>0;
     }
 
-    public int getAgePerson(Person person){
+    public Integer getAgePerson(Person person){
         LocalDate currentDate = LocalDate.now();
         LocalDate birthdayDate = person.getBirthdate();
         return Period.between(birthdayDate, currentDate).getYears();
     }
     public Long getPersonCount(){
         return personRepository.count();
-    }
-
-    public PersonWithCar getPersonWithCar(Person person){
-        PersonWithCar personWithCar = new PersonWithCar();
-        personWithCar.setId(person.getId());
-        personWithCar.setName(person.getName());
-        personWithCar.setBirthday(person.getBirthdate());
-        personWithCar.setCars(carService.findCarByOwnerId(person.getId()));
-        return personWithCar;
     }
 }

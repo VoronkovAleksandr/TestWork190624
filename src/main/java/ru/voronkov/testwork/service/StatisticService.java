@@ -18,8 +18,10 @@ public class StatisticService {
 
 
     public Statistic getStatistic(){
-        return new Statistic(personService.getPersonCount(),
-                carService.getCarCount(),
-                carService.getUniqueVendorCount());
+        Statistic statistic = new Statistic();
+        statistic.setPersoncount(personService.getPersonCount());
+        statistic.setCarcount(carService.getCarCount());
+        statistic.setUniquevendorcount(carService.getUniqueVendorCount());
+        return statistic;
     }
 }

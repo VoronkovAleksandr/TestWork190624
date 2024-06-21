@@ -1,6 +1,8 @@
 package ru.voronkov.testwork.service;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.voronkov.testwork.model.Car;
 import ru.voronkov.testwork.model.Person;
@@ -10,13 +12,15 @@ import ru.voronkov.testwork.repository.PersonRepository;
 import java.util.*;
 
 @Service
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CarService {
 
     private CarRepository carRepository;
     private PersonRepository personRepository;
     private PersonService personService;
-    private int ADULTHOOD = 18;
+    private final Integer ADULTHOOD = 18;
 
     public List<Car> findCarByOwnerId(Long ownerId) {
         return (List<Car>) carRepository.findByOwnerId(ownerId);
