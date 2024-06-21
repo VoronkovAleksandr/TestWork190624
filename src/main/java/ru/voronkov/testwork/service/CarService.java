@@ -19,6 +19,7 @@ public class CarService {
 
     private CarRepository carRepository;
     private PersonRepository personRepository;
+    private PersonService personService;
     private int ADULTHOOD = 18;
 
     public List<Car> findCarByOwnerId(Long ownerId) {
@@ -31,6 +32,7 @@ public class CarService {
     }
 
     public Car addCar(Car car) {
+        //Проверяем валидность car
         if (!isValid(car)) return null;
         return carRepository.save(car);
     }
@@ -39,7 +41,7 @@ public class CarService {
 
         // Проверяем id
         Car checkingCar = findCarById(car.getId());
-        if (checkingCar.equals(car)) return false;
+        if (checkingCar.getId().equals(car.getId())) return false;
 
         // Проверка мощности двигателя
         if (car.getHorsepower() <= 0) return false;
@@ -49,9 +51,6 @@ public class CarService {
         // Проверка person существует
         if (person == null) return false;
         // Проверка возраст больше 18
-        LocalDate currentDate = LocalDate.now();
-        LocalDate birthdayDate = person.getBirthdate();
-        int age = Period.between(birthdayDate, currentDate).getYears();
-        return age >= ADULTHOOD;
+        return personService.getAgePerson(person)>=ADULTHOOD;
     }
 }
