@@ -2,6 +2,7 @@ package ru.voronkov.testwork.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.voronkov.testwork.dto.PersonWithCar;
 import ru.voronkov.testwork.model.Person;
 import ru.voronkov.testwork.repository.PersonRepository;
 
@@ -45,5 +46,14 @@ public class PersonService {
     }
     public Long getPersonCount(){
         return personRepository.count();
+    }
+
+    public PersonWithCar getPersonWithCar(Person person){
+        PersonWithCar personWithCar = new PersonWithCar();
+        personWithCar.setId(person.getId());
+        personWithCar.setName(person.getName());
+        personWithCar.setBirthday(person.getBirthdate());
+        personWithCar.setCars(carService.findCarByOwnerId(person.getId()));
+        return personWithCar;
     }
 }

@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.voronkov.testwork.model.Car;
 
-import java.sql.Date;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class PersonWithCar {
@@ -15,7 +15,7 @@ public class PersonWithCar {
     private String name;
 
     @DateTimeFormat(pattern = "dd.MM.yyyy")
-    private Date birthday;
+    private LocalDate birthday;
 
-    private ArrayList<Car> cars;
+    private List<Car> cars;
 }
