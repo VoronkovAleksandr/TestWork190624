@@ -43,4 +43,7 @@ public class PersonService {
         LocalDate birthdayDate = person.getBirthdate();
         return Period.between(birthdayDate, currentDate).getYears();
     }
+    public Long getPersonCount(){
+        return personRepository.count();
+    }
 }

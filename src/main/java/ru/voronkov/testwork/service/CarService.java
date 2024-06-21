@@ -7,11 +7,7 @@ import ru.voronkov.testwork.model.Person;
 import ru.voronkov.testwork.repository.CarRepository;
 import ru.voronkov.testwork.repository.PersonRepository;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -53,4 +49,22 @@ public class CarService {
         // Проверка возраст больше 18
         return personService.getAgePerson(person)>=ADULTHOOD;
     }
+
+    public Long getCarCount(){
+        return carRepository.count();
+    }
+
+    public Long getUniqueVendorCount(){
+        List<Car> cars = carRepository.findAll();
+        Set<String> vendors =new HashSet<>();
+
+        for (Car car: cars){
+
+            String model = car.getModel();
+            vendors.add(model.substring(0,model.indexOf('-')));
+        }
+        return (long) vendors.size();
+    }
+
+
 }
