@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -20,6 +20,6 @@ public class Person {
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "dd.MM.yyyy")
-    private Date birthdate;
+    private LocalDate birthdate;
 
 }
