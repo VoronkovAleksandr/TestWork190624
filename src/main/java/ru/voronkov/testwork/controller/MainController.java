@@ -37,8 +37,8 @@ public class MainController {
     }
 
     @GetMapping("/personwithcars")
-    public ResponseEntity<PersonWithCar> getAllCarsPerson(@RequestParam("personid") Long id) throws NotFoundException {
-        return new ResponseEntity<>(personWithCarService.getPersonWithCar(personService.findPersonById(id)), HttpStatus.OK);
+    public ResponseEntity<PersonWithCar> getAllCarsPerson(@RequestParam("personid") Long id) throws NotFoundException, BadRequestException {
+        return new ResponseEntity<>(personWithCarService.getPersonWithCar(id), HttpStatus.OK);
     }
 
     @GetMapping("/statistics")
