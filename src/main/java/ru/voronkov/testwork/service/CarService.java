@@ -2,8 +2,8 @@ package ru.voronkov.testwork.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.voronkov.testwork.exception.BadRequestException;
 import ru.voronkov.testwork.model.Car;
 import ru.voronkov.testwork.model.Person;
 import ru.voronkov.testwork.repository.CarRepository;
@@ -14,12 +14,11 @@ import java.util.*;
 @Service
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class CarService {
 
-    private CarRepository carRepository;
-    private PersonRepository personRepository;
-    private PersonService personService;
+    private final CarRepository carRepository;
+    private final PersonRepository personRepository;
+    private final PersonService personService;
     private final Integer ADULTHOOD = 18;
 
     public List<Car> findCarByOwnerId(Long ownerId) {
@@ -31,44 +30,51 @@ public class CarService {
         return car.orElse(null);
     }
 
-    public Car addCar(Car car) {
+    public Car addCar(Car car) throws BadRequestException {
         //Проверяем валидность car
-        if (!isValid(car)) return null;
+        isValid(car);
         return carRepository.save(car);
     }
 
-    private boolean isValid(Car car) {
-
+    private void isValid(Car car) throws BadRequestException {
+        if (car.getId() == null) throw new BadRequestException("id не заполнено или не корректно");
+        if (car.getModel() == null) throw new BadRequestException("id не заполнено или не корректно");
+        if (car.getHorsepower() == null) throw new BadRequestException("id не заполнено или не корректно");
+        if (car.getOwnerId() == null) throw new BadRequestException("id не заполнено или не корректно");
         // Проверяем id
+
         Car checkingCar = findCarById(car.getId());
-        if (checkingCar.getId().equals(car.getId())) return false;
+        if (checkingCar != null) throw new BadRequestException("Car с таким id уже существует");
 
         // Проверка мощности двигателя
-        if (car.getHorsepower() <= 0) return false;
+        if (car.getHorsepower() <= 0) throw new BadRequestException("horsepower <= 0");
 
         // Проверка владельца
-        Person person = personRepository.findById(car.getOwnerId()).orElse(null);
+        Person owner = personService.findPersonById(car.getOwnerId());
         // Проверка person существует
-        if (person == null) return false;
+        if (owner == null) throw new BadRequestException("Person с таким id не существует");
         // Проверка возраст больше 18
-        return personService.getAgePerson(person)>=ADULTHOOD;
+        if (personService.getAgePerson(owner) < ADULTHOOD) throw new BadRequestException("Возраст владельца <18");;
     }
 
-    public Long getCarCount(){
+    public Long getCarCount() {
         return carRepository.count();
     }
 
-    public Long getUniqueVendorCount(){
+    public Long getUniqueVendorCount() {
         List<Car> cars = carRepository.findAll();
-        Set<String> vendors =new HashSet<>();
+        Set<String> vendors = new HashSet<>();
 
-        for (Car car: cars){
+        for (Car car : cars) {
 
             String model = car.getModel();
-            vendors.add(model.substring(0,model.indexOf('-')));
+            vendors.add(model.substring(0, model.indexOf('-')));
         }
         return (long) vendors.size();
     }
 
 
+    public void deleteAllCars() {
+        carRepository.deleteAll();
+    }
 }

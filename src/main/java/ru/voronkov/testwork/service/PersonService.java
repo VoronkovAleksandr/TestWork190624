@@ -3,6 +3,7 @@ package ru.voronkov.testwork.service;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Service;
+import ru.voronkov.testwork.exception.BadRequestException;
 import ru.voronkov.testwork.model.Person;
 import ru.voronkov.testwork.repository.PersonRepository;
 
@@ -17,34 +18,42 @@ public class PersonService {
 
     private PersonRepository personRepository;
 
-    public Person findPersonById(Long id){
+    public Person findPersonById(Long id) {
         Optional<Person> person = personRepository.findById(id);
         return person.orElse(null);
     }
 
-    public Person addPerson(Person person){
+    public Person addPerson(Person person) throws BadRequestException {
         //Проверяем валидность person
-        if (!isValid(person)) return null;
+        isValid(person);
         return personRepository.save(person);
     }
 
-    private boolean isValid(Person person){
+    private void isValid(Person person) throws BadRequestException {
+        // Проверяем заполненность полей
+        if (person.getId() == null) throw new BadRequestException("id не указан или не корректен");
+        if (person.getName() == null) throw new BadRequestException("name не указан или не корректен");
+        if (person.getBirthdate() == null) throw new BadRequestException("birthday не указан или не корректен");
 
         Person checkingPerson = findPersonById(person.getId());
-
         // Проверяем id
-        if (checkingPerson.getId().equals(person.getId())) return false;
-
+        if (checkingPerson != null) throw new BadRequestException("Person с таким id уже существует");
         // Проверяем возраст
-        return getAgePerson(person)>0;
+        if (getAgePerson(person) <= 0) throw new BadRequestException("Дата рождения Person в будущем");
     }
 
-    public Integer getAgePerson(Person person){
+    public Integer getAgePerson(Person person) {
         LocalDate currentDate = LocalDate.now();
         LocalDate birthdayDate = person.getBirthdate();
-        return Period.between(birthdayDate, currentDate).getYears();
+        Integer age = Period.between(birthdayDate, currentDate).getYears();
+        return age;
     }
-    public Long getPersonCount(){
+
+    public void deleteAllPerson() {
+        personRepository.deleteAll();
+    }
+
+    public Long getPersonCount() {
         return personRepository.count();
     }
 }

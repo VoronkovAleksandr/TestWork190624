@@ -12,7 +12,6 @@ import java.time.LocalDate;
 public class Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -22,4 +21,12 @@ public class Person {
     @DateTimeFormat(pattern = "dd.MM.yyyy")
     private LocalDate birthdate;
 
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", birthdate=" + birthdate +
+                '}';
+    }
 }
