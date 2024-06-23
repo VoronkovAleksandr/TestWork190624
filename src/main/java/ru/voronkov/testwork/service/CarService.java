@@ -37,12 +37,13 @@ public class CarService {
     }
 
     private void isValid(Car car) throws BadRequestException {
+        // Проверяем на null
         if (car.getId() == null) throw new BadRequestException("id не заполнено или не корректно");
         if (car.getModel() == null) throw new BadRequestException("id не заполнено или не корректно");
         if (car.getHorsepower() == null) throw new BadRequestException("id не заполнено или не корректно");
         if (car.getOwnerId() == null) throw new BadRequestException("id не заполнено или не корректно");
-        // Проверяем id
 
+        // Проверяем id
         Car checkingCar = findCarById(car.getId());
         if (checkingCar != null) throw new BadRequestException("Car с таким id уже существует");
 
@@ -54,7 +55,7 @@ public class CarService {
         // Проверка person существует
         if (owner == null) throw new BadRequestException("Person с таким id не существует");
         // Проверка возраст больше 18
-        if (personService.getAgePerson(owner) < ADULTHOOD) throw new BadRequestException("Возраст владельца <18");;
+        if (personService.getAgePerson(owner) < ADULTHOOD) throw new BadRequestException("Возраст владельца <18");
     }
 
     public Long getCarCount() {
